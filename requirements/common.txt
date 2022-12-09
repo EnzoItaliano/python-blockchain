@@ -1,1 +1,4 @@
 Flask==2.2.2
+pycryptodome==3.16.0
+base58==2.1.1
+python-dotenv==0.21.0
