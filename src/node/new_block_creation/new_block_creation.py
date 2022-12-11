@@ -49,7 +49,7 @@ class ProofOfWork:
 
     def create_new_block(self):
         transaction = self.mem_pool.get_first_transaction_from_memory()
-        if len(transaction) > 0:
+        if transaction:
             block_header = BlockHeader(
                 previous_block_hash=self.blockchain.block_header.hash,
                 timestamp=datetime.timestamp(datetime.now()),
@@ -57,7 +57,7 @@ class ProofOfWork:
             )
             block_header.noonce = self.get_noonce(block_header)
             block_header.hash = block_header.get_hash()
-            self.new_block = Block(transaction_hash=transaction, block_header=block_header)
+            self.new_block = Block(transaction=transaction, block_header=block_header)
         else:
             raise BlockException("", "No transaction in mem_pool")
 
@@ -67,7 +67,7 @@ class ProofOfWork:
             block_content = {
                 "block": {
                     "header": self.new_block.block_header.to_dict,
-                    "transaction": self.new_block.transaction_hash,
+                    "transaction": self.new_block.transaction,
                 }
             }
             node.send_new_block(block_content)

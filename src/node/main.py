@@ -4,7 +4,11 @@ from flask import Flask, jsonify, request
 
 from src.common.io_blockchain import BlockchainMemory
 from src.common.io_mem_pool import MemPool
-from src.node.transaction_validation.transaction_validation import Transaction
+from src.node.new_block_validation.new_block_validation import NewBlock, NewBlockException
+from src.node.transaction_validation.transaction_validation import (
+    Transaction,
+    TransactionException,
+)
 
 app = Flask(__name__)
 

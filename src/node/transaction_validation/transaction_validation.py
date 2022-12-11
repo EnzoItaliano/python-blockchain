@@ -16,6 +16,12 @@ from ...common.node import Node
 PUBLIC_KEY = bytes(os.getenv("PUBLIC_KEY"), "utf-8")
 
 
+class TransactionException(Exception):
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message
+
+
 class OtherNode(Node):
     def __init__(self, ip: str, port: int):
         super().__init__(ip, port)

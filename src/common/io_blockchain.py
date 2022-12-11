@@ -9,7 +9,7 @@ class BlockchainMemory:
     def __init__(self):
         self.file_name = os.getenv("BLOCKCHAIN_DIR")
 
-    def get_blockchain_from_memory(self):
+    def get_blockchain_from_memory(self) -> Block:
         logging.info("Getting blockchain from memory")
         with open(self.file_name, "r") as file_obj:
             blocks_text = file_obj.read()
@@ -23,10 +23,10 @@ class BlockchainMemory:
                 previous_block = block_object
         return block_object
 
-    def store_blockchain_in_memory(self, blockchain: Block):
+    def store_blockchain_in_memory(self, blockchain: Block) -> None:
         self.store_blockchain_dict_in_memory(blockchain.to_dict)
 
-    def store_blockchain_dict_in_memory(self, blockchain_list: list):
+    def store_blockchain_dict_in_memory(self, blockchain_list: list) -> None:
         logging.info("Storing blockchain in memory")
         text = json.dumps(blockchain_list).encode("utf-8")
         with open(self.file_name, "wb") as file_obj:

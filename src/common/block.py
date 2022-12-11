@@ -48,18 +48,18 @@ class BlockHeader:
 class Block(object):
     def __init__(
         self,
-        transaction_hash: bytes,
+        transaction: dict,
         block_header: BlockHeader,
         previous_block=None,
     ):
-        self.transaction_hash = transaction_hash
+        self.transaction = transaction
         self.previous_block = previous_block
         self.block_header = block_header
 
     def __eq__(self, other):
         try:
             assert self.block_header == other.block_header
-            assert self.transaction_hash == other.transaction_hash
+            assert self.transaction == other.transaction
             return True
         except AssertionError:
             return False
@@ -77,7 +77,7 @@ class Block(object):
             {
                 "timestamp": self.block_header.timestamp,
                 "hash": self.block_header.hash,
-                "transaction_hash": self.transaction_hash,
+                "transaction": self.transaction,
             }
         )
 
@@ -88,7 +88,7 @@ class Block(object):
         while current_block:
             block_data = {
                 "header": current_block.block_header.to_dict,
-                "transaction_hash": current_block.transaction_hash,
+                "transaction": current_block.transaction,
             }
             block_list.append(block_data)
             current_block = current_block.previous_block
@@ -98,10 +98,10 @@ class Block(object):
     def to_json(self) -> str:
         return json.dumps(self.to_dict)
 
-    def get_transaction(self, transaction_hash: dict) -> dict:
+    def get_transaction(self, transaction: dict) -> dict:
         current_block = self
         while current_block.previous_block:
-            if current_block.transaction_hash == transaction_hash:
+            if current_block.transaction == transaction:
                 return current_block
             current_block = current_block.previous_block
         return {}
