@@ -4,16 +4,12 @@ from flask import Flask, jsonify, request
 
 from src.common.io_blockchain import BlockchainMemory
 from src.common.io_mem_pool import MemPool
-from src.initialize_blockchain import blockchain
 from src.node.transaction_validation.transaction_validation import Transaction
-
 
 app = Flask(__name__)
 
 mempool = MemPool()
 blockchain_memory = BlockchainMemory()
-
-blockchain_base = blockchain()
 
 
 @app.route("/create_wallet", methods=["POST"])
@@ -43,6 +39,7 @@ def validate_block():
 @app.route("/add", methods=["POST"])
 def receive_data():
     content = request.json
+    blockchain_base = blockchain_memory.get_blockchain_from_memory()
     try:
         transaction = Transaction(blockchain_base)
         transaction.receive(content)
