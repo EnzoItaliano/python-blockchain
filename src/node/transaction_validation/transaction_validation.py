@@ -1,5 +1,6 @@
 # node.py
 import binascii
+import os
 
 import requests
 from Crypto.Hash import SHA256
@@ -10,6 +11,9 @@ from src.common.owner import Owner
 from ...common.block import Block
 from ...common.io_mem_pool import MemPool
 from ...common.node import Node
+
+
+PUBLIC_KEY = bytes(os.getenv("PUBLIC_KEY"), "utf-8")
 
 
 class OtherNode(Node):
@@ -42,8 +46,8 @@ class Transaction:
         self.transaction_hash = bytes(transaction["transaction_hash"], "utf-8")
         self.signature = bytes(transaction["signature"], "utf-8")
 
-    def validate(self, public_key: bytes):
-        public_key_object = RSA.import_key(public_key)
+    def validate(self):
+        public_key_object = RSA.import_key(PUBLIC_KEY)
         transaction_hash = SHA256.new(self.transaction_hash)
         if (
             pkcs1_15.new(public_key_object).verify(

@@ -1,4 +1,3 @@
-import os
 import json
 
 from flask import Flask, jsonify, request
@@ -8,10 +7,8 @@ from src.common.io_mem_pool import MemPool
 from src.initialize_blockchain import blockchain
 from src.node.transaction_validation.transaction_validation import Transaction
 
-PUBLIC_KEY = bytes(os.getenv("PUBLIC_KEY"), "utf-8")
 
 app = Flask(__name__)
-
 
 mempool = MemPool()
 blockchain_memory = BlockchainMemory()
@@ -47,12 +44,12 @@ def validate_block():
 def receive_data():
     content = request.json
     try:
-        node = Transaction(blockchain_base)
-        node.receive(content)
-        if node.is_new:
-            node.validate(PUBLIC_KEY)
-            node.store()
-            node.broadcast()
+        transaction = Transaction(blockchain_base)
+        transaction.receive(content)
+        if transaction.is_new:
+            transaction.validate()
+            transaction.store()
+            transaction.broadcast()
             print("Valid signature")
 
     except Exception as e:
