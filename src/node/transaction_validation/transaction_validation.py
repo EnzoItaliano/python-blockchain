@@ -7,9 +7,9 @@ from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 
 from src.common.owner import Owner
-from ..common.block import Block
-from ..common.io_mem_pool import MemPool
-from ..common.node import Node
+from ...common.block import Block
+from ...common.io_mem_pool import MemPool
+from ...common.node import Node
 
 
 class OtherNode(Node):
@@ -20,7 +20,7 @@ class OtherNode(Node):
         return self.post("add", transaction_data)
 
 
-class NodeTransaction:
+class Transaction:
     def __init__(self, blockchain: Block = None):
         self.blockchain = blockchain
         self.transaction_data: dict = {}

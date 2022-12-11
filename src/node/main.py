@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request
 from src.common.io_blockchain import BlockchainMemory
 from src.common.io_mem_pool import MemPool
 from src.initialize_blockchain import blockchain
-from src.node.node import NodeTransaction
+from src.node.transaction_validation.transaction_validation import Transaction
 
 PUBLIC_KEY = bytes(os.getenv("PUBLIC_KEY"), "utf-8")
 
@@ -21,7 +21,7 @@ blockchain_base = blockchain()
 
 @app.route("/create_wallet", methods=["POST"])
 def create_node():
-    wallet = NodeTransaction.create_wallet()
+    wallet = Transaction.create_wallet()
 
     response = app.response_class(
         response=json.dumps(wallet), status=201, mimetype="application/json"
@@ -47,7 +47,7 @@ def validate_block():
 def receive_data():
     content = request.json
     try:
-        node = NodeTransaction(blockchain_base)
+        node = Transaction(blockchain_base)
         node.receive(content)
         if node.is_new:
             node.validate(PUBLIC_KEY)
