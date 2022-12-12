@@ -98,10 +98,10 @@ class Block(object):
     def to_json(self) -> str:
         return json.dumps(self.to_dict)
 
-    def get_transaction(self, transaction: dict) -> dict:
+    def get_transaction(self, transaction: dict) -> [dict]:
         current_block = self
         while current_block.previous_block:
             if current_block.transaction == transaction:
-                return current_block
+                return current_block.to_dict
             current_block = current_block.previous_block
         return {}

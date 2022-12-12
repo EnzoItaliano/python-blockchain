@@ -50,7 +50,7 @@ def validate_block():
 def receive_data():
     logging.info("New transaction validation request")
     content = request.json
-    logging.info(f"Transaction: {content['transaction']}")
+    logging.info(f"Transaction: {content}")
     blockchain_base = blockchain_memory.get_blockchain_from_memory()
     try:
         transaction = Transaction(blockchain_base, MY_HOSTNAME)
@@ -75,7 +75,7 @@ def get_blocks():
 def get_transaction(transaction_hash):
     logging.info("Transaction request")
     blockchain_base = blockchain_memory.get_blockchain_from_memory()
-    return jsonify(blockchain_base.get_transaction(transaction_hash))
+    return jsonify(blockchain_base.get_transaction(json.loads(transaction_hash)))
 
 
 @app.route("/new_node_advertisement", methods=["POST"])
@@ -114,7 +114,7 @@ def main():
     my_node = Node(MY_HOSTNAME)
     network = Network(my_node)
     network.join_network()
-    app.run(port=MY_PORT, debug=(APP_MODE != "production"))
+    app.run(port=MY_PORT)
 
 
 if __name__ == "__main__":

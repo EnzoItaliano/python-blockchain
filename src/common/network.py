@@ -11,7 +11,7 @@ from src.common.node import Node
 
 class Network:
 
-    FIRST_KNOWN_NODE_HOSTNAME = "node00.my-blockchain.gruyaume.com"
+    FIRST_KNOWN_NODE_HOSTNAME = "localhost:5000"
 
     def __init__(self, node: Node, init_known_nodes_file: bool = True):
         self.node = node
