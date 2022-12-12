@@ -1,9 +1,9 @@
 import json
 import logging
-import os
 
 from flask import Flask, jsonify, request
 
+from config import APP_MODE, MY_HOSTNAME, MY_PORT
 from src.common.io_blockchain import BlockchainMemory
 from src.common.io_known_nodes import KnownNodesMemory
 from src.common.io_mem_pool import MemPool
@@ -17,12 +17,7 @@ from src.node.transaction_validation.transaction_validation import (
 
 app = Flask(__name__)
 
-MY_HOSTNAME = os.getenv("MY_HOSTNAME")
-
 blockchain_memory = BlockchainMemory()
-# my_node = Node(MY_HOSTNAME)
-# network = Network(my_node)
-# network.join_network()
 
 
 @app.route("/create_wallet", methods=["POST"])
@@ -119,7 +114,7 @@ def main():
     my_node = Node(MY_HOSTNAME)
     network = Network(my_node)
     network.join_network()
-    app.run()
+    app.run(port=MY_PORT, debug=(APP_MODE != "production"))
 
 
 if __name__ == "__main__":

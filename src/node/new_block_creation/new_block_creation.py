@@ -8,7 +8,6 @@ from src.common.block import Block, BlockHeader
 from src.common.io_blockchain import BlockchainMemory
 from src.common.io_known_nodes import KnownNodesMemory
 from src.common.io_mem_pool import MemPool
-from src.common.node import Node
 from src.common.utils import calculate_hash
 from src.common.values import NUMBER_OF_LEADING_ZEROS
 

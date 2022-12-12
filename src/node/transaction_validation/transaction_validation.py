@@ -1,19 +1,17 @@
 # node.py
 import binascii
 import logging
-import os
 
 import requests
 from Crypto.Hash import SHA256
 from Crypto.PublicKey import RSA
 from Crypto.Signature import pkcs1_15
 
+from config import PUBLIC_KEY
 from src.common.owner import Owner
 from ...common.block import Block
 from ...common.io_known_nodes import KnownNodesMemory
 from ...common.io_mem_pool import MemPool
-
-PUBLIC_KEY = bytes(os.getenv("PUBLIC_KEY"), "utf-8")
 
 
 class TransactionException(Exception):

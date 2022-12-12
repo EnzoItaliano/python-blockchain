@@ -1,11 +1,12 @@
 import json
-import os
-from typing import List, Optional
+from typing import List
+
+from config import MEMPOOL_DIR
 
 
 class MemPool:
     def __init__(self):
-        self.file_name = os.getenv("MEMPOOL_DIR")
+        self.file_name = MEMPOOL_DIR
 
     def get_transactions_from_memory(self) -> List[dict]:
         with open(self.file_name, "rb") as file_obj:

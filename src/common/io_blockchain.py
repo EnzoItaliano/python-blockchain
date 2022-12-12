@@ -1,13 +1,13 @@
 import json
 import logging
-import os
 
+from config import BLOCKCHAIN_DIR
 from src.common.block import Block, BlockHeader
 
 
 class BlockchainMemory:
     def __init__(self):
-        self.file_name = os.getenv("BLOCKCHAIN_DIR")
+        self.file_name = BLOCKCHAIN_DIR
 
     def get_blockchain_from_memory(self) -> Block:
         logging.info("Getting blockchain from memory")

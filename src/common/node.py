@@ -1,14 +1,10 @@
-import os
-
 import requests
-
-MY_PORT = os.getenv("MY_PORT")
 
 
 class Node:
     def __init__(self, hostname: str):
         self.hostname = hostname
-        self.base_url = f"http://{hostname}:{MY_PORT}/"
+        self.base_url = f"http://{hostname}/"
 
     def __eq__(self, other):
         return self.hostname == other.hostname
