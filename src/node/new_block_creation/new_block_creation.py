@@ -1,10 +1,12 @@
 import json
+import logging
 from datetime import datetime
 
 import requests
 
 from src.common.block import Block, BlockHeader
 from src.common.io_blockchain import BlockchainMemory
+from src.common.io_known_nodes import KnownNodesMemory
 from src.common.io_mem_pool import MemPool
 from src.common.node import Node
 from src.common.utils import calculate_hash
@@ -17,17 +19,12 @@ class BlockException(Exception):
         self.message = message
 
 
-class OtherNode(Node):
-    def __init__(self, ip: str, port: int):
-        super().__init__(ip, port)
-
-    def send_new_block(self, block: dict) -> requests.Response:
-        return self.post(endpoint="block", data=block)
-
-
 class ProofOfWork:
-    def __init__(self):
+    def __init__(self, hostname: str):
+        logging.info("Starting Proof of Work")
+        self.known_nodes_memory = KnownNodesMemory()
         blockchain_memory = BlockchainMemory()
+        self.hostname = hostname
         self.mem_pool = MemPool()
         self.blockchain = blockchain_memory.get_blockchain_from_memory()
         self.new_block = None
@@ -62,12 +59,24 @@ class ProofOfWork:
             raise BlockException("", "No transaction in mem_pool")
 
     def broadcast(self):
-        node_list = [OtherNode("localhost", 5000)]
+        logging.info("Broadcasting to other nodes")
+        node_list = self.known_nodes_memory.known_nodes
+        broadcasted_node = False
         for node in node_list:
-            block_content = {
-                "block": {
-                    "header": self.new_block.block_header.to_dict,
-                    "transaction": self.new_block.transaction,
+            if node.hostname != self.hostname:
+                block_content = {
+                    "block": {
+                        "header": self.new_block.block_header.to_dict,
+                        "transaction": self.new_block.transaction,
+                    },
+                    "sender": self.hostname,
                 }
-            }
-            node.send_new_block(block_content)
+                try:
+                    logging.info(f"Broadcasting to {node.hostname}")
+                    node.send_new_block(block_content)
+                    broadcasted_node = True
+                except requests.exceptions.ConnectionError as e:
+                    logging.info(f"Failed broadcasting to {node.hostname}: {e}")
+                except requests.exceptions.HTTPError as e:
+                    logging.info(f"Failed broadcasting to {node.hostname}: {e}")
+        return broadcasted_node

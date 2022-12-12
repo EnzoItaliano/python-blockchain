@@ -20,7 +20,7 @@ class MemPool:
         current_mem_pool_list = self.get_transactions_from_memory()
         return current_mem_pool_list[0] if len(current_mem_pool_list) else None
 
-    def store_transaction_in_memory(self, transactions: list) -> None:
+    def store_transactions_in_memory(self, transactions: list) -> None:
         text = json.dumps(transactions).encode("utf-8")
         with open(self.file_name, "wb") as file_obj:
             file_obj.write(text)
@@ -32,4 +32,4 @@ class MemPool:
         transactions = self.get_transactions_from_memory()
         if len(transactions) > 0:
             transactions.pop(0)
-            self.store_transaction_in_memory(transactions)
+            self.store_transactions_in_memory(transactions)

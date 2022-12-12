@@ -1,5 +1,6 @@
 # node.py
 import binascii
+import logging
 import os
 
 import requests
@@ -9,9 +10,8 @@ from Crypto.Signature import pkcs1_15
 
 from src.common.owner import Owner
 from ...common.block import Block
+from ...common.io_known_nodes import KnownNodesMemory
 from ...common.io_mem_pool import MemPool
-from ...common.node import Node
-
 
 PUBLIC_KEY = bytes(os.getenv("PUBLIC_KEY"), "utf-8")
 
@@ -22,22 +22,17 @@ class TransactionException(Exception):
         self.message = message
 
 
-class OtherNode(Node):
-    def __init__(self, ip: str, port: int):
-        super().__init__(ip, port)
-
-    def send_transaction(self, transaction_data: dict) -> requests.Response:
-        return self.post("add", transaction_data)
-
-
 class Transaction:
-    def __init__(self, blockchain: Block = None):
+    def __init__(self, blockchain: Block, hostname: str):
         self.blockchain = blockchain
         self.transaction_data: dict = {}
         self.transaction_hash: bytes = b""
         self.signature: bytes = b""
         self.is_valid = False
         self.mempool = MemPool()
+        self.known_node_memory = KnownNodesMemory()
+        self.sender = ""
+        self.hostname = hostname
 
     @staticmethod
     def create_wallet() -> dict:
@@ -71,18 +66,20 @@ class Transaction:
         return True
 
     def broadcast(self):
-        node_list = [
-            OtherNode("localhost", 5001),
-            OtherNode("localhost", 5002),
-        ]
+        logging.info("Broadcasting to all nodes")
+        node_list = self.known_node_memory.known_nodes
         for node in node_list:
-            try:
-                node.send_transaction(self.transaction_data)
-            except requests.ConnectionError:
-                pass
+            if node.hostname != self.hostname and node.hostname != self.sender:
+                try:
+                    logging.info(f"Broadcasting to {node.hostname}")
+                    node.send_transaction(self.transaction_data)
+                except requests.ConnectionError:
+                    logging.info(f"Failed broadcasting to {node.hostname}")
 
     def store(self):
         if self.is_valid:
+            logging.info("Storing transaction data in memory")
+            logging.info(f"Transaction data: {self.transaction_data}")
             current_transaction = self.mempool.get_transactions_from_memory()
             current_transaction.append(self.transaction_data)
-            self.mempool.store_transaction_in_memory(current_transaction)
+            self.mempool.store_transactions_in_memory(current_transaction)

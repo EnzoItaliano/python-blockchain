@@ -17,6 +17,7 @@ class BlockchainMemory:
             previous_block = None
             for block_dict in reversed(block_list):
                 block_header_str = block_dict.pop("header")
+                block_header_str.pop("hash")
                 block_header = BlockHeader(**block_header_str)
                 block_object = Block(**block_dict, block_header=block_header)
                 block_object.previous_block = previous_block
