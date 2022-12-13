@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from flask import Flask, jsonify, request
 
@@ -114,7 +115,7 @@ def main():
     my_node = Node(MY_HOSTNAME)
     network = Network(my_node)
     network.join_network()
-    app.run(port=MY_PORT)
+    app.run(host=os.getenv("MY_HOSTNAME"), port=MY_PORT)
 
 
 if __name__ == "__main__":
