@@ -4,7 +4,7 @@ import os
 
 from flask import Flask, jsonify, request
 
-from config import APP_MODE, MY_HOSTNAME, MY_PORT
+from config import APP_MODE, BLOCKCHAIN_DIR, MEMPOOL_DIR, MY_HOSTNAME, MY_PORT
 from src.common.io_blockchain import BlockchainMemory
 from src.common.io_known_nodes import KnownNodesMemory
 from src.common.io_mem_pool import MemPool
@@ -112,6 +112,8 @@ def restart():
 
 def main():
     global network
+    open(MEMPOOL_DIR, "w").close() if not os.path.exists(MEMPOOL_DIR) else None
+    open(BLOCKCHAIN_DIR, "w").close() if not os.path.exists(BLOCKCHAIN_DIR) else None
     my_node = Node(MY_HOSTNAME)
     network = Network(my_node)
     network.join_network()
