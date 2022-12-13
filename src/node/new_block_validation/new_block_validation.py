@@ -27,7 +27,7 @@ class NewBlock:
         self.hostname = hostname
 
     def receive(self, new_block: dict, sender: str):
-        new_block.pop("hash")
+        new_block["header"].pop("hash")
         block_header = BlockHeader(**new_block["header"])
         self.new_block = Block(transaction=new_block["transaction"], block_header=block_header)
         self.sender = sender
