@@ -66,9 +66,10 @@ class NewBlock:
         # self.mempool.clear_first_transaction_from_memory()
 
         current_transactions = self.mempool.get_transactions_from_memory()
-        transactions_cleared = [
-            i for i in current_transactions if not (i in self.new_block.transaction)
-        ]
+        transactions_cleared = []
+        for current_transaction in current_transactions:
+            if not (current_transaction == self.new_block.transaction):
+                transactions_cleared.append(current_transaction)
         self.mempool.store_transactions_in_memory(transactions_cleared)
 
     def broadcast(self):
