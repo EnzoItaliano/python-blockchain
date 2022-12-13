@@ -20,6 +20,7 @@ To build the project run the following commands in terminal, step by step:
     ```
     $ cd /path/to/project
     $ python -m venv venv
+    $ . ven/bin/activate
     $ pip install -r requirements/dev.txt
     ```
     
